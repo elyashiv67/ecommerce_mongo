@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
-import db_connect from './services/mongoDB.js';
+import db_connect from './src/services/mongoDB.js';
 
 
 dotenv.config();
