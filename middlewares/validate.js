@@ -9,9 +9,11 @@ function validate(schema, source = 'body') {
         const result = schema.safeParse(req[source]);
 
         if (!result.success) {
+            // fieldErrors: errors of a specific field, formErrors: errors of the whole object (like .refine)
+            const {fieldErrors, formErrors} = z.flattenError(result.error);
             return res.status(400).json({
                 message: 'Validation failed.',
-                errors: z.flattenError(result.error).fieldErrors
+                errors: formErrors.length ? {...fieldErrors, general: formErrors} : fieldErrors
             });
         }
 
