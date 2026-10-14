@@ -8,7 +8,7 @@ const addOrUpdateUserSchema = z.object({
     phone: z.string().min(10).max(10).startsWith('0'),
     email: z.email(),
     address: z.string().min(2) ,
-    role: z.enum(['user', 'seller' , 'admin'])
+    role: z.enum(['user', 'seller' , 'admin']).default('user'),
 });
 
 
