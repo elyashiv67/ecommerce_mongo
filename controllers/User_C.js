@@ -39,8 +39,12 @@ async function addUser(req, res) {
         if (!newUser)
             return res.status(404).json({message: 'user not added.'});
 
-        return res.status(200).json({message: "user added successfully", user: newUser});
+        return res.status(201).json({message: "user added successfully", user: newUser});
     } catch (e) {
+        // duplicate value in a unique field (email / phone)
+        if (e.code === 11000)
+            return res.status(409).json({message: `${Object.keys(e.keyValue)[0]} already exists.`});
+
         return res.status(500).json({message: `Server error: ${e.message}`});
     }
 }
@@ -57,6 +61,10 @@ async function updateUser(req, res) {
 
         return res.status(200).json({message: "user updated successfully", user: updatedUser});
     } catch (e) {
+        // duplicate value in a unique field (email / phone)
+        if (e.code === 11000)
+            return res.status(409).json({message: `${Object.keys(e.keyValue)[0]} already exists.`});
+
         return res.status(500).json({message: `Server error: ${e.message}`});
     }
 }

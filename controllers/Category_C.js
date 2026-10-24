@@ -37,6 +37,10 @@ async function addCategory(req, res) {
 
         return res.status(201).json({message: 'category added successfully', category: newCategory});
     } catch (e) {
+        // duplicate value in a unique field (name)
+        if (e.code === 11000)
+            return res.status(409).json({message: `${Object.keys(e.keyValue)[0]} already exists.`});
+
         return res.status(500).json({message: `Server error: ${e.message}`});
     }
 }
@@ -53,6 +57,10 @@ async function updateCategory(req, res) {
 
         return res.status(200).json({message: 'category updated successfully', category: updatedCategory});
     } catch (e) {
+        // duplicate value in a unique field (name)
+        if (e.code === 11000)
+            return res.status(409).json({message: `${Object.keys(e.keyValue)[0]} already exists.`});
+
         return res.status(500).json({message: `Server error: ${e.message}`});
     }
 }
