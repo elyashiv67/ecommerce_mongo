@@ -1,0 +1,688 @@
+{
+  "info": {
+    "name": "Ecommerce Mongo API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4585"
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "categoryId",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "orderId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) pm.collectionVariables.set('userId', pm.response.json().user._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Israel Israeli\",\n  \"phone\": \"0501234567\",\n  \"email\": \"israel@example.com\",\n  \"address\": \"Tel Aviv\",\n  \"role\": \"seller\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create user - invalid (Zod 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A\",\n  \"phone\": \"123\",\n  \"email\": \"not-an-email\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get all users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get user by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update user",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"Jerusalem\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "{{userId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Create category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) pm.collectionVariables.set('categoryId', pm.response.json().category._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electronics\",\n  \"desc\": \"Computers, phones and accessories\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/category",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "category"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get all categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "category"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Products count per category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category/products-count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "category",
+                "products-count"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get category by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "category",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"desc\": \"Computers, phones, tablets and accessories\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/category/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "category",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) pm.collectionVariables.set('productId', pm.response.json()._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{userId}}\",\n  \"category_id\": \"{{categoryId}}\",\n  \"title\": \"Laptop\",\n  \"desc\": \"15 inch laptop\",\n  \"price\": 3500,\n  \"stock\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get all products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get products by category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/by-category/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "by-category",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get products by user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/by-user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "by-user",
+                "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get product by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update product",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 3200\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "{{productId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) pm.collectionVariables.set('orderId', pm.response.json().order._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{userId}}\",\n  \"products\": [\n    {\n      \"product_id\": \"{{productId}}\",\n      \"quantity\": 2\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create order - not enough stock (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{userId}}\",\n  \"products\": [\n    {\n      \"product_id\": \"{{productId}}\",\n      \"quantity\": 9999\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get all orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/order",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get order by id (populated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/order/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order",
+                "{{orderId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get orders of a user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/order/by-user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order",
+                "by-user",
+                "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update order status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"working\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order",
+                "{{orderId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel order (returns stock)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"canceled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order",
+                "{{orderId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deletes",
+      "item": [
+        {
+          "name": "Delete product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "category",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete user (409 while it has orders)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "{{userId}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

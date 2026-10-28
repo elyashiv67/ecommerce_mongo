@@ -29,6 +29,25 @@ async function getOrderById(req, res) {
     }
 }
 
+async function getOrdersByUser(req, res) {
+    try {
+        const userId = req.params.id;
+
+        //check if user exist
+        const isUserValid = await User.exists({_id : userId});
+        if (!isUserValid)
+            return res.status(404).json({message: 'User not found'});
+
+        // newest first, with the products details
+        const orders = await Order.find({user_id: userId}).sort({createdAt: -1}).populate('products.product_id');
+
+        // an empty array already means "no orders"
+        return res.status(200).json({orders: orders});
+    } catch (e) {
+        return res.status(500).json({ message: `Server error: ${e.message}` });
+    }
+}
+
 async function addOrder(req, res) {
     try {
         const { user_id, products } = req.body;
@@ -62,17 +81,26 @@ async function addOrder(req, res) {
             orderProducts.push({ product_id: product._id, quantity: item.quantity, total_price: linePrice });
         }
 
-        // all checks passed, update the stock of all products in one call
-        const result = await Product.bulkWrite(products.map(item => ({
-            updateOne: {
-                filter: { _id: item.product_id, stock: { $gte: item.quantity } },
-                update: { $inc: { stock: -item.quantity } }
-            }
-        })));
+        // all checks passed, take the stock product by product
+        const taken = [];
+        for (const item of products) {
+            const updated = await Product.findOneAndUpdate(
+                { _id: item.product_id, stock: { $gte: item.quantity } },
+                { $inc: { stock: -item.quantity } }
+            );
 
-        // another order took the stock between the check and the update
-        if (result.modifiedCount !== products.length) {
-            return res.status(409).json({ message: 'Stock changed while placing the order, please try again' });
+            // another order took the stock between the check and the update
+            if (!updated) {
+                // give back the stock that was already taken for this order
+                await Product.bulkWrite(taken.map(t => ({
+                    updateOne: {
+                        filter: { _id: t.product_id },
+                        update: { $inc: { stock: t.quantity } }
+                    }
+                })));
+                return res.status(409).json({ message: 'Stock changed while placing the order, please try again' });
+            }
+            taken.push(item);
         }
 
         const order = await Order.create({ user_id, products: orderProducts, total_price: orderTotal });
@@ -123,4 +151,4 @@ async function updateOrder(req, res) {
     }
 }
 
-export {getAllOrders , getOrderById, addOrder, updateOrder};
+export {getAllOrders , getOrderById, getOrdersByUser, addOrder, updateOrder};
