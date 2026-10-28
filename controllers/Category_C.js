@@ -14,6 +14,21 @@ async function getAllCategories(req, res) {
     }
 }
 
+async function getProductsCountByCategory(req, res) {
+    try {
+        // lookup from categories, so a category with no products is shown with 0
+        const counts = await Category.aggregate([
+            {$lookup: {from: Product.collection.name, localField: '_id', foreignField: 'category_id', as: 'products'}},
+            {$project: {name: 1, productsCount: {$size: '$products'}}},
+            {$sort: {productsCount: -1, name: 1}}
+        ]);
+
+        return res.status(200).json({categories: counts});
+    } catch (e) {
+        return res.status(500).json({message: `Server error: ${e.message}`});
+    }
+}
+
 async function getCategoryById(req, res) {
     try {
         const {id} = req.params;
@@ -86,4 +101,4 @@ async function deleteCategory(req, res) {
     }
 }
 
-export {getAllCategories, getCategoryById, addCategory, updateCategory, deleteCategory};
+export {getAllCategories, getProductsCountByCategory, getCategoryById, addCategory, updateCategory, deleteCategory};

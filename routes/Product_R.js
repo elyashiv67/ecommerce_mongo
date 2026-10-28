@@ -11,8 +11,8 @@ import {addProductSchema, idSchema, updateProductSchema} from "../services/zod/p
 
 const router = express.Router();
 
-router.get('/all', getAllProducts);
-router.get('/by-user', validate(idSchema, 'query'), getAllProductsByUser);
+router.get('/', getAllProducts);
+router.get('/by-user/:id', validate(idSchema, 'params'), getAllProductsByUser);
 router.get('/by-category/:id', validate(idSchema, 'params'), getAllProductsByCategory);
 router.get('/:id', validate(idSchema, 'params'), getProductById);
 router.post('/', validate(addProductSchema), addProduct);

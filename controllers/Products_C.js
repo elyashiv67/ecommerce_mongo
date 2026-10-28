@@ -16,7 +16,7 @@ async function getAllProducts(req, res) {
 
 async function getAllProductsByUser(req, res) {
     try {
-        const userId = req.query.id;
+        const userId = req.params.id;
 
         const products = await Product.find({user_id: userId});
 
